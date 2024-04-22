@@ -218,16 +218,16 @@ public class KnightCodeVisitor extends KnightCodeBaseVisitor<Object>{
         //if variable is an INTEGER, reads input integer
         if (var.getType().equals("INTEGER"))
         {
-            mainVisitor.visitVarInsn(Opcodes.ALOAD, scanLocation);
-            mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I", false); // Scan.nextLong()
-            mainVisitor.visitVarInsn(Opcodes.ISTORE, var.getLocation()); // Stores int value in a variable
+            methVisitor.visitVarInsn(Opcodes.ALOAD, scanLocation);
+            methVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I", false); // Scan.nextLong()
+            methVisitor.visitVarInsn(Opcodes.ISTORE, var.getLocation()); // Stores int value in a variable
         }
         //if variable is a STRING, reads input string
         else if (var.getType().equals("STRING"))
         {
-            mainVisitor.visitVarInsn(Opcodes.ALOAD, scanLocation); // Loads scanner
-            mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false); // Scan.nextLine()
-            mainVisitor.visitVarInsn(Opcodes.ASTORE, var.getLocation()); // Stores String value in a variable
+            methVisitor.visitVarInsn(Opcodes.ALOAD, scanLocation); // Loads scanner
+            methVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false); // Scan.nextLine()
+            methVisitor.visitVarInsn(Opcodes.ASTORE, var.getLocation()); // Stores String value in a variable
         }
         return super.visitRead(ctx);
     }  
@@ -292,10 +292,10 @@ public class KnightCodeVisitor extends KnightCodeBaseVisitor<Object>{
             System.out.println("expr id " + id + "\nvar: " + var.toString());
             /*switch (id) {
                 case "INTEGER":
-                    mainVisitor.visitVarInsn(Opcodes.ILOAD, var.getLocation());
+                    methVisitor.visitVarInsn(Opcodes.ILOAD, var.getLocation());
                     break;
                 case "STRING":
-                    mainVisitor.visitVarInsn(Opcodes.ALOAD, var.getLocation());
+                    methVisitor.visitVarInsn(Opcodes.ALOAD, var.getLocation());
                     break;
             }*/
 
@@ -348,7 +348,7 @@ public class KnightCodeVisitor extends KnightCodeBaseVisitor<Object>{
         methVisitor.visitLabel(trueLabel);
         methVisitor.visitLdcInsn(1);
 
-        mainVisitor.visitLabel(falseLabel);
+        methVisitor.visitLabel(falseLabel);
 
         return super.visitComparison(ctx);
     }
@@ -374,19 +374,19 @@ public class KnightCodeVisitor extends KnightCodeBaseVisitor<Object>{
         {
             case ">":
                 System.out.println("GT");
-                mainVisitor.visitJumpInsn(Opcodes.IF_ICMPGT, trueLabel);
+                methVisitor.visitJumpInsn(Opcodes.IF_ICMPGT, trueLabel);
                 break;
             case "<":
                 System.out.println("LT");
-                mainVisitor.visitJumpInsn(Opcodes.IF_ICMPLT, trueLabel);
+                methVisitor.visitJumpInsn(Opcodes.IF_ICMPLT, trueLabel);
                 break;
             case "<>":
                 System.out.println("NE");
-                mainVisitor.visitJumpInsn(Opcodes.IF_ICMPNE, trueLabel);
+                methVisitor.visitJumpInsn(Opcodes.IF_ICMPNE, trueLabel);
                 break;
              case "=":
                 System.out.println("EQ");  
-                mainVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, trueLabel);
+                methVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, trueLabel);
                 break;
             default:
                 System.err.println("ERROR: Unkown Comparison.");
@@ -470,24 +470,24 @@ public class KnightCodeVisitor extends KnightCodeBaseVisitor<Object>{
 
         //decides comparison
         String operand = ctx.comp().getText();
-        //Handles whether or not it will jump to endLoop (when comp becomes false)
+        //Handles whether or not it will jump to leaveLoop (when comp becomes false)
         switch (operand) 
         {
             case ">":
                 System.out.println("LE");
-                mainVisitor.visitJumpInsn(Opcodes.IF_ICMPLE, leaveLoop);
+                methVisitor.visitJumpInsn(Opcodes.IF_ICMPLE, leaveLoop);
                 break;
             case "<":
                 System.out.println("GE");
-                mainVisitor.visitJumpInsn(Opcodes.IF_ICMPGE, leaveLoop);
+                methVisitor.visitJumpInsn(Opcodes.IF_ICMPGE, leaveLoop);
                 break;
             case "<>":
                 System.out.println("EQ");
-                mainVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, leaveLoop);
+                methVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, leaveLoop);
                 break;
             case "=":
                 System.out.println("NEQ");  
-                mainVisitor.visitJumpInsn(Opcodes.IF_ICMPNE, leaveLoop);
+                methVisitor.visitJumpInsn(Opcodes.IF_ICMPNE, leaveLoop);
                 break;
             default:
                 System.err.println("ERROR: Unknown Comparison.");
@@ -512,7 +512,7 @@ public class KnightCodeVisitor extends KnightCodeBaseVisitor<Object>{
      */
     public Object visitPrint(KnightCodeParser.PrintContext ctx)
     {      
-        mainVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+        methVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
         // If an ID is being printed: searches the stack and finds its location so it can be loaded and printed
         if(ctx.ID() != null)
         {   
